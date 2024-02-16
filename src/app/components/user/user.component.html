@@ -1,1 +1,177 @@
-<p>user works!</p>
+<div class="container-2">
+
+  <mat-toolbar color="primary">
+    <span routerLink="/dashboard">ADZ Systems</span>
+
+    <span class="example-spacer"></span>
+    <span>Administrador</span>
+
+    <span class="example-spacer"></span>
+    <button mat-raised-button color="primary" data-bs-toggle="modal"
+        data-bs-target="#nuevoCliente">Nuevo Cliente</button>
+  </mat-toolbar>
+</div>
+<div class="container-2">
+  <mat-toolbar>
+      <span class="example-spacer"></span>
+      <span>Lista de solicitudes al dia: </span>
+      <span style="color: green; padding-left: 10px;"> {{fechaHoy}} </span>
+      <span class="example-spacer"></span>
+  </mat-toolbar>
+
+  <div class="mat-elevation-z8">
+      <div class="text-center">
+          <div class="row">
+              <div class="col-sm-6">
+                  <div style="margin-bottom: 10px;">
+                      <mat-toolbar>
+                          <span class="example-spacer"></span>
+                          <span>Documentos Subidos</span>
+                          <span class="example-spacer"></span>
+                      </mat-toolbar>
+                      <mat-form-field>
+                          <mat-label>Filtro</mat-label>
+                          <input matInput (keyup)="filterDocumentos($event)" placeholder="Escriba dos o mas letras"
+                              #input autocomplete="off">
+                      </mat-form-field>
+                  </div>
+              </div>
+              <div class="col-sm-6">
+                  <div style="margin-bottom: 10px;">
+                      <mat-toolbar>
+                          <span class="example-spacer"></span>
+                          <span>Pendientes</span>
+                          <span class="example-spacer"></span>
+                      </mat-toolbar>
+                      <mat-form-field>
+                          <mat-label>Filtro</mat-label>
+                          <input matInput (keyup)="filterPendientes($event)" placeholder="Escriba dos o mas letras"
+                              #input autocomplete="off">
+                      </mat-form-field>
+                  </div>
+              </div>
+              <div class="col-sm-6">
+                  <div style="margin-bottom: 10px;">
+                      <mat-toolbar>
+                          <span class="example-spacer"></span>
+                          <span>Clientes</span>
+                          <span class="example-spacer"></span>
+                          <button mat-raised-button color="primary" data-bs-toggle="modal"
+                              data-bs-target="#nuevoCliente">Nuevo Cliente</button>
+                      </mat-toolbar>
+                      <mat-form-field>
+                          <mat-label>Filtro</mat-label>
+                          <input matInput (keyup)="filterClientes($event)" placeholder="Escriba dos o mas letras"
+                              #input autocomplete="off">
+                      </mat-form-field>
+                  </div>
+              </div>
+              <div class="col-sm-6">
+                  <div style="margin-bottom: 10px;">
+                      <mat-toolbar>
+                          <span>Tipos de Documentos Admnitidos</span>
+                          <span class="example-spacer"></span>
+                          <button mat-raised-button color="primary" data-bs-toggle="modal"
+                              data-bs-target="#nuevoTipoDocum">Nuevo tipo</button>
+                      </mat-toolbar>
+                      <mat-form-field>
+                          <mat-label>Filtro</mat-label>
+                          <input matInput (keyup)="filterTipos($event)" placeholder="Escriba dos o mas letras" #input
+                              autocomplete="off">
+                      </mat-form-field>
+                      <table mat-table matSort id="tiposDocumentosAdmitidos">
+                          <!-- ID Column -->
+                          <ng-container matColumnDef="numeroTipo">
+                              <th mat-header-cell *matHeaderCellDef> # </th>
+                              <td mat-cell *matCellDef="let listaTiposDocumentos; let i = index">
+                                  {{i+1}}
+                              </td>
+                          </ng-container>
+                          <!-- ID Column -->
+                          <ng-container matColumnDef="nombreTipo">
+                              <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+                              <td mat-cell *matCellDef="let listaTiposDocumentos"> {{listaTiposDocumentos.nombreTipo}}
+                              </td>
+                          </ng-container>
+
+                          <!-- ID Column -->
+                          <ng-container matColumnDef="descripcionTipo">
+                              <th mat-header-cell *matHeaderCellDef mat-sort-header> Descripcion </th>
+                              <td mat-cell *matCellDef="let listaTiposDocumentos">
+                                  {{listaTiposDocumentos.caracteristicasTipo}}
+                              </td>
+                          </ng-container>
+
+                          <!-- Progress Column -->
+                          <ng-container matColumnDef="estadoTipo">
+                              <th mat-header-cell *matHeaderCellDef> Estado </th>
+                              <td mat-cell *matCellDef="let listaTiposDocumentos">
+                                  <div style="color:red" *ngIf="listaTiposDocumentos.estadoTipo==0">INACTIVO</div>
+                                  <div style="color:green" *ngIf="listaTiposDocumentos.estadoTipo==1">ACTIVO</div>
+                              </td>
+                          </ng-container>
+
+                          <!-- Progress Column -->
+                          <ng-container matColumnDef="accionesTipo">
+                              <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                              <td mat-cell *matCellDef="let listaTiposDocumentos">
+                                  <a (click)="verDatosTipo(listaTiposDocumentos.idTipoDoc)" style="color:red"
+                                      matTooltip="Ver Tipo">
+                                      <mat-icon style="color: blue;">search</mat-icon>
+                                  </a>
+                                  <a (click)="editarDatosTipo(listaTiposDocumentos.idTipoDoc)" style="color:red"
+                                      matTooltip="Editar Tipo?">
+                                      <mat-icon style="color: green;">edit</mat-icon>
+                                  </a>
+                                  <a (click)="darBajaTipo(listaTiposDocumentos.idTipoDoc)" style="color:red"
+                                      matTooltip="Dar de Baja Tipo?">
+                                      <mat-icon style="color: red;">delete</mat-icon>
+                                  </a>
+                              </td>
+                          </ng-container>
+                          <!--matTooltip="Eliminar Solicitud?"-->
+                          <tr mat-header-row *matHeaderRowDef="disColTipos"></tr>
+                          <tr mat-row *matRowDef="let row; columns: disColTipos;"></tr>
+
+                          <!-- Row shown when there is no matching data. -->
+                          <tr class="mat-row" *matNoDataRow>
+                              <td class="mat-cell" colspan="4">No se encontraron resultados de su busqueda
+                              </td>
+                          </tr>
+                      </table>
+                      <mat-paginator [length]="20" [pageSize]="5" aria-label="Seleccionar cantidad"></mat-paginator>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="modal" id="nuevoCliente" tabindex="-1" aria-labelledby="nuevoClienteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Nuevo Cliente</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="formCliente.reset()"></button>
+            </div>
+            <div class="modal-body">
+                <!--<form [formGroup]="form" (ngSubmit)="guardarSolicitud()">-->
+                <form [formGroup]="formCliente" (ngSubmit)="guardarCliente()">
+                    <label for="idTipoDocumento" class="form-label">Seleccionar el tipo de documento</label>
+                    <select class="form-select" formControlName="idTipoDocumento">
+
+                    </select>
+                    <mat-toolbar style="margin-top: 15px;">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                            (click)="formCliente.reset()">Close</button>
+                        <span class="example-spacer"></span>
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                            [disabled]="formCliente.invalid">Save
+                            changes</button>
+                    </mat-toolbar>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
